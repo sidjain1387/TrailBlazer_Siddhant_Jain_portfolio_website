@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Siddhant Jain — The Code Wrangler</title>
+<link href="https://fonts.googleapis.com/css2?family=Rye&family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sand: #F2E8D0;
+    --darkwood: #3B2507;
+    --wood: #6B3D14;
+    --leather: #8B5E3C;
+    --rust: #B5451B;
+    --gold: #C9922A;
+    --sky: #7AABCC;
+    --cream: #FAF3E0;
+    --ink: #1C1008;
+    --muted: #7A6045;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--sand);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 15% 20%, rgba(201,146,42,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 10%, rgba(201,146,42,0.25) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 55% 50%, rgba(201,146,42,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 75%, rgba(201,146,42,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 60%, rgba(201,146,42,0.25) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--darkwood);
+    border-bottom: 3px solid var(--gold);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem;
+    height: 60px;
+  }
+  .nav-brand {
+    font-family: 'Rye', serif;
+    color: var(--gold);
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--sand);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+  .hamburger span { display: block; width: 24px; height: 2px; background: var(--sand); transition: 0.3s; }
+
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 80px 2rem 2rem;
+    background:
+      linear-gradient(to bottom, #2B1800 0%, #5C3210 35%, #8B6340 65%, var(--sand) 100%);
+  }
+
+  #hero::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 220px;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 220'%3E%3Cpolygon points='0,220 0,140 120,60 240,120 360,40 480,110 600,20 720,100 840,50 960,120 1080,70 1200,130 1200,220' fill='%232B1800'/%3E%3Cpolygon points='0,220 0,170 100,120 200,150 350,90 500,140 650,80 800,130 950,100 1100,150 1200,110 1200,220' fill='%233B2507'/%3E%3C/svg%3E")
+      no-repeat bottom center / cover;
+    z-index: 1;
+  }
+
+  #hero::after {
+    content: '';
+    position: absolute; bottom: 60px; left: 5%; width: 60px; height: 120px;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 120'%3E%3Crect x='24' y='20' width='12' height='90' fill='%231a3d1a'/%3E%3Crect x='10' y='50' width='14' height='8' fill='%231a3d1a'/%3E%3Crect x='10' y='35' width='8' height='25' fill='%231a3d1a'/%3E%3Crect x='36' y='55' width='14' height='8' fill='%231a3d1a'/%3E%3Crect x='42' y='40' width='8' height='30' fill='%231a3d1a'/%3E%3C/svg%3E")
+      no-repeat center / contain;
+    z-index: 2;
+  }
+
+  .hero-content { position: relative; z-index: 3; }
+
+  .wanted-badge {
+    display: inline-block;
+    background: var(--cream);
+    border: 3px solid var(--darkwood);
+    border-radius: 4px;
+    padding: 1.5rem 2.5rem 2rem;
+    box-shadow: 6px 6px 0 var(--darkwood);
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .wanted-badge::before {
+    content: '★ WANTED ★';
+    display: block;
+    font-family: 'Rye', serif;
+    font-size: 2rem;
+    color: var(--rust);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.75rem;
+  }
+  .hero-name {
+    font-family: 'Rye', serif;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    color: var(--darkwood);
+    line-height: 1.1;
+    letter-spacing: 0.05em;
+  }
+  .hero-alias {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--leather);
+    margin: 0.5rem 0 0.75rem;
+    font-style: italic;
+  }
+  .hero-tagline {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    border-top: 1px solid var(--leather);
+    padding-top: 0.6rem;
+    margin-top: 0.6rem;
+  }
+  .reward {
+    font-family: 'Rye', serif;
+    font-size: 0.85rem;
+    color: var(--rust);
+    margin-top: 0.5rem;
+  }
+
+  .hero-buttons {
+    display: flex; gap: 1rem; justify-content: center;
+    margin-top: 2rem; flex-wrap: wrap;
+  }
+  .btn {
+    font-family: 'Rye', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    padding: 0.7rem 1.4rem;
+    border: 2px solid var(--gold);
+    background: transparent;
+    color: var(--sand);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+  }
+  .btn:hover { background: var(--gold); color: var(--darkwood); }
+  .btn-solid { background: var(--rust); border-color: var(--rust); color: var(--cream); }
+  .btn-solid:hover { background: var(--darkwood); border-color: var(--darkwood); }
+
+  .scroll-down {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+    z-index: 5; color: var(--gold); font-size: 1.5rem;
+    animation: bounce 1.5s infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  section { padding: 5rem 2rem; position: relative; z-index: 1; }
+  .section-title {
+    font-family: 'Rye', serif;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    color: var(--darkwood);
+    text-align: center;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.08em;
+  }
+  .section-divider {
+    text-align: center; color: var(--gold); font-size: 1.2rem;
+    margin-bottom: 3rem; letter-spacing: 0.5rem;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  #about { background: var(--cream); }
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 3rem; align-items: start;
+  }
+  .about-card {
+    background: var(--sand);
+    border: 2px solid var(--leather);
+    border-radius: 4px;
+    padding: 2rem;
+    box-shadow: 4px 4px 0 var(--wood);
+  }
+  .about-card h3 {
+    font-family: 'Rye', serif;
+    font-size: 1rem;
+    color: var(--rust);
+    margin-bottom: 1rem;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--leather);
+    padding-bottom: 0.5rem;
+  }
+  .about-card p {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--ink);
+  }
+  .quote-block {
+    background: var(--darkwood);
+    color: var(--gold);
+    padding: 2rem;
+    border-radius: 4px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-style: italic;
+    line-height: 1.6;
+    text-align: center;
+    position: relative;
+    margin-top: 2rem;
+  }
+  .quote-block::before { content: '"'; font-size: 4rem; line-height: 0; vertical-align: -1rem; opacity: 0.4; margin-right: 0.25rem; }
+  .quote-block::after { content: '"'; font-size: 4rem; line-height: 0; vertical-align: -1rem; opacity: 0.4; margin-left: 0.25rem; }
+
+  .hobby-row {
+    display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;
+  }
+  .hobby-chip {
+    background: var(--darkwood);
+    color: var(--gold);
+    font-family: 'Rye', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  #skills { background: var(--sand); }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+  .skill-card {
+    background: var(--cream);
+    border: 2px solid var(--leather);
+    border-radius: 4px;
+    padding: 1.5rem;
+    box-shadow: 3px 3px 0 var(--wood);
+  }
+  .skill-card h4 {
+    font-family: 'Rye', serif;
+    font-size: 0.85rem;
+    color: var(--rust);
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .skill-tag {
+    display: inline-block;
+    background: var(--darkwood);
+    color: var(--sand);
+    font-size: 0.78rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 3px;
+    margin: 0.25rem;
+    font-weight: 500;
+  }
+
+  #projects { background: var(--cream); }
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  .project-card {
+    background: var(--sand);
+    border: 2px solid var(--leather);
+    border-radius: 4px;
+    padding: 1.75rem;
+    box-shadow: 4px 4px 0 var(--wood);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .project-card:hover { transform: translateY(-4px); box-shadow: 4px 8px 0 var(--wood); }
+  .project-badge {
+    position: absolute; top: 0; right: 0;
+    background: var(--rust);
+    color: var(--cream);
+    font-family: 'Rye', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    padding: 0.3rem 0.7rem;
+  }
+  .project-card h3 {
+    font-family: 'Rye', serif;
+    font-size: 1rem;
+    color: var(--darkwood);
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.05em;
+  }
+  .project-date {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+  .project-card p { font-size: 0.88rem; line-height: 1.7; color: var(--ink); }
+  .tech-row { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 1rem; }
+  .tech-pill {
+    background: var(--wood);
+    color: var(--sand);
+    font-size: 0.72rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    font-weight: 500;
+  }
+
+  #research { background: var(--darkwood); }
+  #research .section-title { color: var(--gold); }
+  .research-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
+  .paper-card {
+    background: var(--sand);
+    border: 2px solid var(--gold);
+    border-radius: 4px;
+    padding: 2rem;
+    box-shadow: 4px 4px 0 var(--gold);
+    position: relative;
+  }
+  .paper-label {
+    font-family: 'Rye', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--rust);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .paper-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--darkwood);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+  .paper-card a {
+    font-family: 'Rye', serif;
+    font-size: 0.72rem;
+    color: var(--rust);
+    text-decoration: none;
+    letter-spacing: 0.07em;
+    border-bottom: 1px dotted var(--rust);
+    transition: color 0.2s;
+  }
+  .paper-card a:hover { color: var(--darkwood); }
+  .ieee-badge {
+    display: inline-block;
+    background: var(--rust);
+    color: var(--cream);
+    font-family: 'Rye', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
+
+  #achievements { background: var(--sand); }
+  .achievements-list { display: flex; flex-direction: column; gap: 1.25rem; max-width: 750px; margin: 0 auto; }
+  .ach-item {
+    display: flex; align-items: flex-start; gap: 1.25rem;
+    background: var(--cream);
+    border: 2px solid var(--leather);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 3px 3px 0 var(--wood);
+  }
+  .ach-star {
+    font-size: 1.6rem; line-height: 1;
+    flex-shrink: 0;
+    color: var(--gold);
+  }
+  .ach-item h4 { font-family: 'Rye', serif; font-size: 0.9rem; color: var(--darkwood); margin-bottom: 0.35rem; letter-spacing: 0.04em; }
+  .ach-item p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+  #education { background: var(--cream); }
+  .edu-timeline { max-width: 700px; margin: 0 auto; position: relative; }
+  .edu-timeline::before {
+    content: ''; position: absolute; left: 18px; top: 0; bottom: 0;
+    width: 3px; background: var(--leather);
+  }
+  .edu-item { display: flex; gap: 2rem; margin-bottom: 2rem; position: relative; }
+  .edu-dot {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--darkwood); border: 3px solid var(--gold);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    color: var(--gold); font-size: 1rem; position: relative; z-index: 1;
+  }
+  .edu-body {
+    background: var(--sand);
+    border: 2px solid var(--leather);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 3px 3px 0 var(--wood);
+    flex: 1;
+  }
+  .edu-body h4 { font-family: 'Rye', serif; font-size: 0.9rem; color: var(--darkwood); letter-spacing: 0.04em; margin-bottom: 0.2rem; }
+  .edu-body .edu-sub { font-size: 0.82rem; color: var(--muted); }
+  .edu-body .edu-score { font-weight: 600; color: var(--rust); font-size: 0.9rem; margin-top: 0.3rem; }
+  .edu-year { font-size: 0.75rem; color: var(--muted); font-style: italic; }
+
+  #extra { background: var(--sand); }
+  .extra-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .extra-card {
+    background: var(--cream);
+    border: 2px solid var(--leather);
+    border-radius: 4px;
+    padding: 1.75rem;
+    box-shadow: 3px 3px 0 var(--wood);
+  }
+  .extra-card h3 { font-family: 'Rye', serif; font-size: 0.9rem; color: var(--rust); letter-spacing: 0.08em; margin-bottom: 1.25rem; border-bottom: 1px solid var(--leather); padding-bottom: 0.5rem; }
+  .cert-item, .activity-item { margin-bottom: 1rem; }
+  .cert-item strong, .activity-item strong {
+    display: block; font-size: 0.9rem; color: var(--darkwood); font-weight: 600; margin-bottom: 0.1rem;
+  }
+  .cert-item span, .activity-item span {
+    font-size: 0.8rem; color: var(--muted);
+  }
+  .activity-item .date-tag {
+    font-size: 0.72rem;
+    background: var(--wood);
+    color: var(--sand);
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    display: inline-block;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+  }
+
+  #contact {
+    background: var(--darkwood);
+    text-align: center;
+  }
+  #contact .section-title { color: var(--gold); }
+  .contact-sub { color: var(--sand); opacity: 0.75; font-size: 0.95rem; margin-bottom: 2.5rem; font-style: italic; }
+  .contact-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 3rem; }
+  .contact-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--sand);
+    color: var(--darkwood);
+    font-family: 'Rye', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    padding: 0.65rem 1.25rem;
+    border-radius: 4px;
+    text-decoration: none;
+    border: 2px solid var(--gold);
+    transition: background 0.2s, color 0.2s;
+  }
+  .contact-link:hover { background: var(--gold); color: var(--darkwood); }
+  .contact-icon { font-size: 1rem; }
+  .footer-quote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--gold);
+    opacity: 0.7;
+    font-size: 0.9rem;
+    margin-top: 2rem;
+    border-top: 1px solid rgba(201,146,42,0.3);
+    padding-top: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; flex-direction: column; position: fixed; top: 60px; left: 0; right: 0; background: var(--darkwood); padding: 1rem 2rem; gap: 1rem; }
+    .nav-links.open { display: flex; }
+    .hamburger { display: flex; }
+    .about-grid, .extra-grid { grid-template-columns: 1fr; }
+  }
+
+  .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">⭐ Siddhant Jain ⭐</div>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#achievements">Achievements</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-content fade-in">
+    <div class="wanted-badge">
+      <div class="hero-name">Siddhant Jain</div>
+      <div class="hero-alias">aka "The Code Wrangler"</div>
+      <div class="hero-tagline">Full-Stack Developer · AI Researcher · Ghaziabad, U.P.</div>
+      <div class="reward">REWARD: A problem he can't solve — $0.00</div>
+    </div>
+    <div class="hero-buttons">
+      <a href="#projects" class="btn">🤠 View Projects</a>
+      <a href="#research" class="btn btn-solid">📜 Research Papers</a>
+      <a href="mailto:sidjain1387@gmail.com" class="btn">✉️ Hire Me</a>
+    </div>
+  </div>
+  <div class="scroll-down">▼</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <h2 class="section-title">The Outlaw's Tale</h2>
+    <div class="section-divider">✦ ✦ ✦</div>
+    <div class="about-grid">
+      <div>
+        <div class="about-card fade-in">
+          <h3>🏕 Who Am I?</h3>
+          <p>
+            A passionate MBA-BM student at XIMB completed B.Tech in Electrical &amp; Computer Engineering at ABES Engineering College, Ghaziabad — 
+            rode the frontier between hardware and code. I wrangle full-stack applications by day and chase research problems by night. 
+            With a CGPA of 8.24 and two IEEE publications under my belt, I'm always looking for the next challenge to lasso.
+            I'm passionate about entrepreneurship and expanding my skillset every single day — always eager to make the most out of every opportunity that comes my way.
+          </p>
+        </div>
+        <div class="about-card fade-in" style="margin-top: 1.5rem;">
+          <h3>⚔️ Hobbies &amp; Interests</h3>
+          <p>When I'm not shipping code or writing papers, you'll find me on the badminton court, at the chess board, or spinning ping-pong paddles.</p>
+          <div class="hobby-row" style="margin-top: 1rem;">
+            <span class="hobby-chip">🏸 Badminton</span>
+            <span class="hobby-chip">♟ Chess (Bullet Peak: 1092)</span>
+            <span class="hobby-chip">🏓 Table Tennis</span>
+            <span class="hobby-chip">🤖 Machine Learning</span>
+            <span class="hobby-chip">💻 Open Source</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="quote-block fade-in">
+          Fall seven times, stand up eight.
+        </div>
+        <div class="about-card fade-in" style="margin-top: 1.5rem;">
+          <h3>📍 Background Trail</h3>
+          <p>
+            Born and raised in Ghaziabad, Uttar Pradesh. Schooled at Delhi Public School where I scored 88.6% in Class 10 and 84.4% in Class 12.
+            Now pursuing B.Tech (2022–2026) and actively participating in hackathons, research, and college clubs — leaving footprints across the tech frontier.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <h2 class="section-title">The Gunslinger's Arsenal</h2>
+    <div class="section-divider">✦ ✦ ✦</div>
+    <div class="skills-grid">
+      <div class="skill-card fade-in">
+        <h4>🖥 Frontend</h4>
+        <span class="skill-tag">HTML</span>
+        <span class="skill-tag">CSS</span>
+        <span class="skill-tag">JavaScript</span>
+        <span class="skill-tag">React.js</span>
+        <span class="skill-tag">jQuery</span>
+      </div>
+      <div class="skill-card fade-in">
+        <h4>⚙️ Backend</h4>
+        <span class="skill-tag">Node.js</span>
+        <span class="skill-tag">Express.js</span>
+        <span class="skill-tag">Flask</span>
+        <span class="skill-tag">REST APIs</span>
+        <span class="skill-tag">Auth (JWT)</span>
+      </div>
+      <div class="skill-card fade-in">
+        <h4>🗃 Database</h4>
+        <span class="skill-tag">PostgreSQL</span>
+        <span class="skill-tag">SQL</span>
+      </div>
+      <div class="skill-card fade-in">
+        <h4>📱 Mobile</h4>
+        <span class="skill-tag">React Native</span>
+      </div>
+      <div class="skill-card fade-in">
+        <h4>🔬 Languages</h4>
+        <span class="skill-tag">C</span>
+        <span class="skill-tag">C++</span>
+        <span class="skill-tag">Python</span>
+      </div>
+      <div class="skill-card fade-in">
+        <h4>🛠 Tools &amp; Other</h4>
+        <span class="skill-tag">Git</span>
+        <span class="skill-tag">React Router</span>
+        <span class="skill-tag">Microprocessors</span>
+        <span class="skill-tag">Sponsorship</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <h2 class="section-title">Tales of the Trail</h2>
+    <div class="section-divider">✦ ✦ ✦</div>
+    <div class="projects-grid">
+      <div class="project-card fade-in">
+        <div class="project-badge">Flagship</div>
+        <h3>Tourism Bill Maker</h3>
+        <div class="project-date">July 2024 – Dec 2024</div>
+        <p>
+          Built across 3 versions — from a basic CRUD app to a full React SPA with dedicated API, authentication, 
+          customizable bill templates, multi-company support, and support for air, train, cruise, hotel &amp; packages.
+        </p>
+        <div class="tech-row">
+          <span class="tech-pill">React.js</span>
+          <span class="tech-pill">Node.js</span>
+          <span class="tech-pill">Express</span>
+          <span class="tech-pill">PostgreSQL</span>
+          <span class="tech-pill">React Router</span>
+          <span class="tech-pill">JWT Auth</span>
+        </div>
+      </div>
+      <div class="project-card fade-in">
+        <h3>Basic Yelp Clone</h3>
+        <div class="project-date">Oct 2024</div>
+        <p>
+          A restaurant review platform supporting add / edit / delete of restaurants, multi-review submissions, 
+          and star ratings — built end-to-end with a PostgreSQL backend.
+        </p>
+        <div class="tech-row">
+          <span class="tech-pill">React</span>
+          <span class="tech-pill">Node.js</span>
+          <span class="tech-pill">Express</span>
+          <span class="tech-pill">PostgreSQL</span>
+        </div>
+      </div>
+      <div class="project-card fade-in">
+        <h3>Multi API Website</h3>
+        <div class="project-date">June 2024</div>
+        <p>
+          A fun utility hub — generate QR codes, check live currency rates, track COVID-19 stats, get random 
+          cat images and jokes, all from one clean interface.
+        </p>
+        <div class="tech-row">
+          <span class="tech-pill">Node.js</span>
+          <span class="tech-pill">Express.js</span>
+          <span class="tech-pill">Public APIs</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH -->
+<section id="research">
+  <div class="container">
+    <h2 class="section-title">Dispatches from the Frontier</h2>
+    <div class="section-divider" style="color: var(--gold);">✦ ✦ ✦</div>
+    <div class="research-grid">
+      <div class="paper-card fade-in">
+        <div class="paper-label">📡 Published Research</div>
+        <h3>Application of CNN Based Segregation Techniques for Waste Management <span class="ieee-badge">IEEE</span></h3>
+        <p style="font-size:0.85rem; color: var(--muted); line-height:1.6; margin-bottom:1rem;">
+          Applies convolutional neural networks to automate waste classification and segregation — a machine learning approach to real-world environmental impact.
+        </p>
+        <a href="https://ieeexplore.ieee.org/document/11485639" target="_blank" rel="noopener">↗ View on IEEE Xplore</a>
+      </div>
+      <div class="paper-card fade-in">
+        <div class="paper-label">🧠 Published Research</div>
+        <h3>EEG-Based Emotion Recognition Using Quantum Kernel–Based Machine Learning <span class="ieee-badge">IEEE</span></h3>
+        <p style="font-size:0.85rem; color: var(--muted); line-height:1.6; margin-bottom:1rem;">
+          Explores quantum kernel methods for decoding human emotions from EEG signals — where quantum computing meets neuroscience and affective AI.
+        </p>
+        <a href="https://ieeexplore.ieee.org/document/11485872" target="_blank" rel="noopener">↗ View on IEEE Xplore</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="container">
+    <h2 class="section-title">Trophies on the Mantle</h2>
+    <div class="section-divider">✦ ✦ ✦</div>
+    <div class="achievements-list">
+      <div class="ach-item fade-in">
+        <div class="ach-star">🏆</div>
+        <div>
+          <h4>Top 50 / 1800 — Tech-Sprint-48 Hackathon</h4>
+          <p>Presented <em>PetTrack</em> — an innovative smart pet care solution featuring health monitoring and delegated caregiving workflows.</p>
+        </div>
+      </div>
+      <div class="ach-item fade-in">
+        <div class="ach-star">🥈</div>
+        <div>
+          <h4>Top 50 / 150 — Internal SIH Hackathon</h4>
+          <p>Pitched a data science + ML + web development system for institutional ranking — selected from 150 competing teams.</p>
+        </div>
+      </div>
+      <div class="ach-item fade-in">
+        <div class="ach-star">📜</div>
+        <div>
+          <h4>2 IEEE Published Research Papers</h4>
+          <p>CNN-based waste management and quantum kernel EEG emotion recognition — both published on IEEE Xplore.</p>
+        </div>
+      </div>
+      <div class="ach-item fade-in">
+        <div class="ach-star">🎖</div>
+        <div>
+          <h4>Elite + Silver Medal — NPTEL (C Programming)</h4>
+          <p>Earned top distinction in the NPTEL "Problem-Solving Through Programming in C" certification course.</p>
+        </div>
+      </div>
+      <div class="ach-item fade-in">
+        <div class="ach-star">⭐</div>
+        <div>
+          <h4>5-Star Python — HackerRank</h4>
+          <p>Achieved the highest star rating on HackerRank for Python programming proficiency.</p>
+        </div>
+      </div>
+      <!-- NEW from LinkedIn PDF -->
+      <div class="ach-item fade-in">
+        <div class="ach-star">🏅</div>
+        <div>
+          <h4>Director's Merit Certificate — 2nd Position (B.Tech. ELCE, 2023–24)</h4>
+          <p>Awarded Director's Merit Certificate for securing 2nd position in the Electrical &amp; Computer Engineering department for the academic year 2023–24.</p>
+        </div>
+      </div>
+      <div class="ach-item fade-in">
+        <div class="ach-star">🎯</div>
+        <div>
+          <h4>Certificate of Merit — Naukri Campus Young Turks 2025 (94.31 Percentile)</h4>
+          <p>Recognised among top performers in the Naukri Campus Young Turks 2025 assessment with a 94.31 percentile score.</p>
+        </div>
+      </div>
+      <div class="ach-item fade-in">
+        <div class="ach-star">🚁</div>
+        <div>
+          <h4>Certificate of Participation — Innovator Workshop on Drone Design, Development &amp; Piloting</h4>
+          <p>Participated in a hands-on innovator workshop covering drone design, development, and piloting.</p>
+        </div>
+      </div>
+      <div class="ach-item fade-in">
+        <div class="ach-star">⚡</div>
+        <div>
+          <h4>Specialist Badge — Ninja Demoniator League (Coding Ninjas)</h4>
+          <p>Earned the Specialist badge in the Ninja Demoniator League competitive coding league on Coding Ninjas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="container">
+    <h2 class="section-title">The Long Road Here</h2>
+    <div class="section-divider">✦ ✦ ✦</div>
+    <div class="edu-timeline">
+      <div class="edu-item fade-in">
+        <div class="edu-dot">🎓</div>
+        <div class="edu-body">
+          <h4>B.Tech — Electrical &amp; Computer Engineering</h4>
+          <div class="edu-sub">ABES Engineering College, Ghaziabad (A.K.T.U)</div>
+          <div class="edu-score">CGPA: 8.24</div>
+          <div class="edu-year">2022 – 2026</div>
+        </div>
+      </div>
+      <div class="edu-item fade-in">
+        <div class="edu-dot">📚</div>
+        <div class="edu-body">
+          <h4>Class XII — C.B.S.E.</h4>
+          <div class="edu-sub">Delhi Public School, Ghaziabad, U.P.</div>
+          <div class="edu-score">84.4%</div>
+          <div class="edu-year">2022</div>
+        </div>
+      </div>
+      <div class="edu-item fade-in">
+        <div class="edu-dot">✏️</div>
+        <div class="edu-body">
+          <h4>Class X — C.B.S.E.</h4>
+          <div class="edu-sub">Delhi Public School, Ghaziabad, U.P.</div>
+          <div class="edu-score">88.6%</div>
+          <div class="edu-year">2020</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXTRA -->
+<section id="extra">
+  <div class="container">
+    <h2 class="section-title">Camp Duty &amp; Credentials</h2>
+    <div class="section-divider">✦ ✦ ✦</div>
+    <div class="extra-grid">
+      <div class="extra-card fade-in">
+        <h3>📜 Certifications</h3>
+        <div class="cert-item">
+          <strong>Full Stack Web Development</strong>
+          <span>Udemy</span>
+        </div>
+        <div class="cert-item">
+          <strong>Machine Learning (Python)</strong>
+          <span>Udemy</span>
+        </div>
+        <div class="cert-item">
+          <strong>Problem-Solving Through Programming In C</strong>
+          <span>NPTEL — Elite + Silver Medal</span>
+        </div>
+        <div class="cert-item">
+          <strong>5-Star Python</strong>
+          <span>HackerRank</span>
+        </div>
+        <!-- NEW from LinkedIn PDF -->
+        <div class="cert-item">
+          <strong>Certificate of Participation — Innovator Workshop on Drone Design, Development &amp; Piloting</strong>
+          <span>External Certification</span>
+        </div>
+        <div class="cert-item">
+          <strong>Naukri Campus Young Turks 2025</strong>
+          <span>Certificate of Merit — 94.31 Percentile</span>
+        </div>
+        <div class="cert-item">
+          <strong>Smart India Hackathon — Internal Round</strong>
+          <span>Certificate of Participation</span>
+        </div>
+        <div class="cert-item">
+          <strong>Director's Merit Certificate</strong>
+          <span>2nd Position, B.Tech. ELCE, 2023–24</span>
+        </div>
+      </div>
+      <div class="extra-card fade-in">
+        <h3>🤠 Club Activities</h3>
+        <div class="activity-item">
+          <span class="date-tag">Nov 2024 – Present</span>
+          <strong>Visual Aid Lead — Dataverse Club</strong>
+          <span>Organised CodeBits (75+ participants); managed social media content &amp; stories.</span>
+        </div>
+        <div class="activity-item">
+          <span class="date-tag">Oct 2023 – Nov 2024</span>
+          <strong>Event Coordinator — Dataverse Club</strong>
+          <span>Organising team for Hack-O-Verse hackathon; found sponsors; coordinated 100+ participants.</span>
+        </div>
+        <div class="activity-item">
+          <span class="date-tag">Feb 2023 – Oct 2023</span>
+          <strong>Member — EN Department Club</strong>
+          <span>2 events (50+ attendance); technical poster competition (20+ participants); Gandhi Jayanti event.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <h2 class="section-title">Send a Telegram</h2>
+    <div class="section-divider" style="color: var(--gold);">✦ ✦ ✦</div>
+    <p class="contact-sub">Every legend needs a sidekick. Let's ride together.</p>
+    <div class="contact-links">
+      <a class="contact-link" href="mailto:contact.siddhantjain@gmail.com">
+        <span class="contact-icon">✉️</span> contact.siddhantjain@gmail.com
+      </a>
+      <a class="contact-link" href="tel:+919540251387">
+        <span class="contact-icon">📞</span> +91-9540251387
+      </a>
+      <a class="contact-link" href="https://www.linkedin.com/in/sidjain1387" target="_blank" rel="noopener">
+        <span class="contact-icon">🔗</span> LinkedIn
+      </a>
+      <a class="contact-link" href="https://github.com/sidjain1387" target="_blank" rel="noopener">
+        <span class="contact-icon">🐙</span> GitHub
+      </a>
+      <a class="contact-link" href="https://www.hackerrank.com/Sidjain1387" target="_blank" rel="noopener">
+        <span class="contact-icon">💻</span> HackerRank
+      </a>
+      <a class="contact-link" href="https://leetcode.com/u/sidjain1387/" target="_blank" rel="noopener">
+        <span class="contact-icon">⚡</span> LeetCode
+      </a>
+    </div>
+    <div class="footer-quote">
+      "Fall seven times, stand up eight." — The Code Wrangler's Creed
+    </div>
+  </div>
+</section>
+
+<script>
+  function toggleMenu() {
+    document.getElementById('nav-links').classList.toggle('open');
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.getElementById('nav-links').classList.remove('open');
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
